@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
 import GlobalHeader from "./Navigation/GlobalHeader";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Folder as FolderIcon,
   FileText,
   ChevronRight,
   Home,
-  Plus,
   PlusCircle,
   Trash2,
-  MoreVertical,
   Search
 } from "lucide-react";
 import api from "../services/api";
@@ -21,7 +19,7 @@ const Notes = () => {
   const [notes, setNotes] = useState([]);
   const [breadcrumbs, setBreadcrumbs] = useState([{ id: null, title: "Home" }]);
   const [newItemTitle, setNewItemTitle] = useState("");
-  const [isCreatingFolder, setIsCreatingFolder] = useState(false);
+
   const [loading, setLoading] = useState(true);
 
   // Initialize breadcrumbs if folderId is present
@@ -40,12 +38,7 @@ const Notes = () => {
     }
   }, [folderId]);
 
-  // Load notes when component mounts or folder changes
-  useEffect(() => {
-    loadNotes();
-  }, [currentFolder]);
-
-  const loadNotes = async () => {
+  const loadNotes = React.useCallback(async () => {
     try {
       setLoading(true);
       let data;
@@ -60,7 +53,12 @@ const Notes = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentFolder]);
+
+  // Load notes when component mounts or folder changes
+  useEffect(() => {
+    loadNotes();
+  }, [loadNotes]);
 
   const handleCreateItem = async (isFolder) => {
     if (!newItemTitle.trim()) return;

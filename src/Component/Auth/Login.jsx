@@ -73,7 +73,7 @@ const Login = () => {
                         <div className="space-y-2">
                             <div className="flex justify-between items-center ml-1">
                                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Security</label>
-                                <a href="#" className="text-[10px] font-black uppercase tracking-widest text-blue-500 hover:text-blue-400 transition-colors">Forgot?</a>
+                                <button type="button" className="text-[10px] font-black uppercase tracking-widest text-blue-500 hover:text-blue-400 transition-colors bg-transparent border-none p-0 cursor-pointer">Forgot?</button>
                             </div>
                             <div className="relative group">
                                 <Lock size={20} className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-blue-500 transition-colors" />

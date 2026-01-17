@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, User, UserPlus, Github, Eye, EyeOff, CheckCircle2, AlertCircle, BrainCircuit } from 'lucide-react';
+import { Mail, Lock, User, UserPlus, Eye, EyeOff, CheckCircle2, AlertCircle, BrainCircuit } from 'lucide-react';
 import authService from '../../services/auth';
 import signupCover from '../../assets/auth/signup_cover.png';
 

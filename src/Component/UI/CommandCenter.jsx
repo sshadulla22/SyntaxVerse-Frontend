@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Search, FileText, Folder, X, Command } from "lucide-react";
+import { Search, FileText, Folder, Command } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 
