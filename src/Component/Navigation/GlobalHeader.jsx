@@ -152,7 +152,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer */}
       <div className={`fixed inset-0 top-16 z-40 bg-black/95 backdrop-blur-xl transition-all duration-300 md:hidden ${isMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full pointer-events-none'}`}>
-        <div className="flex flex-col p-6 gap-6">
+        <div className="flex flex-col bg-black p-6 gap-6">
           <div className="flex flex-col gap-2">
             <p className="text-[10px] font-black uppercase tracking-widest text-gray-600 mb-2">Navigation</p>
             <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 text-xl font-bold text-white p-2">
