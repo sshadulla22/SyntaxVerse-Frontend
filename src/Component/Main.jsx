@@ -190,7 +190,7 @@ const Main = () => {
                                 <p className="text-gray-400 font-medium">Loading your knowledge base...</p>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                                 {filteredTopics.length === 0 ? (
                                     <div className="col-span-full bg-[#111111] border-2 border-dashed border-[#333333] rounded-3xl py-16 px-4 flex flex-col items-center justify-center text-center">
                                         <div className="bg-[#1a1a1a] p-6 rounded-full border border-[#333333] mb-4">

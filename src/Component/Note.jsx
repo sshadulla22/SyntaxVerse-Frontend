@@ -39,6 +39,7 @@ const Note = () => {
     const [copied, setCopied] = useState(false);
     const [isPreview, setIsPreview] = useState(false);
     const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState("editor"); // For mobile: "editor" or "playground"
 
     // Refs for synchronization
     const editorRef = useRef(null);
@@ -304,26 +305,42 @@ const Note = () => {
                     </div>
 
                     <div className="flex items-center gap-2">
+                        {/* Mobile Tab Switcher */}
+                        <div className="flex lg:hidden bg-[#1a1a1a] p-1 rounded-xl border border-[#333333] mr-2">
+                            <button
+                                onClick={() => setActiveTab("editor")}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === "editor" ? "bg-blue-600 text-white shadow-lg" : "text-gray-500 hover:text-white"}`}
+                            >
+                                Note
+                            </button>
+                            <button
+                                onClick={() => setActiveTab("playground")}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === "playground" ? "bg-blue-600 text-white shadow-lg" : "text-gray-500 hover:text-white"}`}
+                            >
+                                Code
+                            </button>
+                        </div>
+
                         <button
                             onClick={handleCopy}
-                            className="p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-all"
+                            className="hidden sm:flex p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-all"
                             title="Copy to Clipboard"
                         >
                             {copied ? <Check size={20} className="text-green-500" /> : <Copy size={20} />}
                         </button>
                         <button
                             onClick={handleDownload}
-                            className="p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-all"
+                            className="hidden sm:flex p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-all"
                             title="Download Note"
                         >
                             <Download size={20} />
                         </button>
 
-                        <div className="h-6 w-[1px] bg-gray-800 mx-1"></div>
+                        <div className="h-6 w-[1px] bg-gray-800 mx-1 hidden lg:block"></div>
 
                         <button
                             onClick={() => setShowPlayground(!showPlayground)}
-                            className={`flex items-center gap-2 px-3 py-1.5 text-[10px] font-bold rounded-lg transition-all border ${showPlayground ? 'bg-blue-600/10 border-blue-500/20 text-blue-400' : 'bg-[#1a1a1a] border-[#333333] text-gray-500 hover:text-white'}`}
+                            className={`hidden lg:flex items-center gap-2 px-3 py-1.5 text-[10px] font-bold rounded-lg transition-all border ${showPlayground ? 'bg-blue-600/10 border-blue-500/20 text-blue-400' : 'bg-[#1a1a1a] border-[#333333] text-gray-500 hover:text-white'}`}
                         >
                             <CodeIcon size={14} />
                             <span className="hidden md:inline">{showPlayground ? "Hide Playground" : "Show Playground"}</span>
@@ -359,7 +376,7 @@ const Note = () => {
                                 className="flex items-center gap-2 px-4 py-1.5 text-xs font-semibold bg-[#1a1a1a] hover:bg-[#222222] border border-[#333333] text-white rounded-lg transition-all"
                             >
                                 <Edit3 size={16} />
-                                <span>Edit</span>
+                                <span>{isEditing ? "Editing" : "Edit"}</span>
                             </button>
                         )}
                     </div>
@@ -369,7 +386,7 @@ const Note = () => {
                 <div className="flex-1 overflow-hidden flex flex-col lg:flex-row gap-3">
 
                     {/* Note Editor Pane */}
-                    <div className="flex-1 bg-[#111111] border border-[#333333] rounded-2xl overflow-hidden flex flex-col shadow-2xl relative">
+                    <div className={`flex-1 bg-[#111111] border border-[#333333] rounded-2xl overflow-hidden flex flex-col shadow-2xl relative ${activeTab === "editor" ? "flex" : "hidden lg:flex"}`}>
 
                         {/* Terminal Box - Top Position */}
                         {showPlayground && (
@@ -469,8 +486,8 @@ const Note = () => {
                     </div>
 
                     {/* Code Compiler Pane - Toggleable */}
-                    {showPlayground && (
-                        <div className="w-full lg:w-[400px] xl:w-[480px] flex flex-col gap-3 h-screen animate-in slide-in-from-right duration-300">
+                    {(showPlayground || activeTab === "playground") && (
+                        <div className={`w-full lg:w-[400px] xl:w-[480px] flex flex-col gap-3 animate-in slide-in-from-right duration-300 ${activeTab === "playground" ? "flex" : "hidden lg:flex"}`}>
 
                             {/* Editor Box */}
                             <div className="flex-1 bg-[#111111] border border-[#333333] rounded-2xl overflow-hidden flex flex-col shadow-2xl h-full">
@@ -500,8 +517,8 @@ const Note = () => {
                                                                 setIsLangMenuOpen(false);
                                                             }}
                                                             className={`w-full text-left px-4 py-2.5 text-xs font-medium transition-colors flex items-center justify-between ${language === lang.id
-                                                                    ? 'bg-blue-600/10 text-blue-400'
-                                                                    : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                                                                ? 'bg-blue-600/10 text-blue-400'
+                                                                : 'text-gray-400 hover:bg-white/5 hover:text-white'
                                                                 }`}
                                                         >
                                                             {lang.name}

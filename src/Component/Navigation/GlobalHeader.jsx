@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Home, Settings, Bell, LogOut, FileText, User, Shapes, Orbit, Activity } from "lucide-react";
+import { Home, Settings, Bell, LogOut, FileText, User, Shapes, Orbit, Activity, Menu, X } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import authService from "../../services/auth";
 import api from "../../services/api";
@@ -9,6 +9,7 @@ import logo from "../../assets/logo/syntaxverse_logo.png";
 export default function Navbar() {
   const [user, setUser] = useState(null);
   const [status, setStatus] = useState({ ok: true, code: 200, latency: 0 });
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -61,7 +62,7 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Navigation */}
+        {/* Navigation - Desktop */}
         <div className="hidden md:flex items-center gap-1">
           <Link to="/" className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all ${location.pathname === '/' ? 'bg-white/5 text-blue-400' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}>
             <Home size={18} />
@@ -81,26 +82,28 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Profile & Auth Actions */}
-        <div className="flex items-center gap-4">
-          {isAuthenticated && <ZenPlayer />}
+        {/* Right Section: ZenPlayer & Profile & Mobile Toggle */}
+        <div className="flex items-center gap-2 md:gap-4">
+          <div className="hidden lg:block">
+            {isAuthenticated && <ZenPlayer />}
+          </div>
 
           {isAuthenticated ? (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 md:gap-4">
               <button className="text-gray-400 hover:text-white transition-colors relative p-2 rounded-lg hover:bg-white/5">
                 <Bell size={20} />
                 <span className="absolute top-2 right-2 w-2 h-2 bg-blue-500 rounded-full animate-ping"></span>
                 <span className="absolute top-2 right-2 w-2 h-2 bg-blue-500 rounded-full"></span>
               </button>
 
-              <div className="h-6 w-[1px] bg-white/10 mx-2 hidden sm:block"></div>
+              <div className="h-6 w-[1px] bg-white/10 mx-1 hidden sm:block"></div>
 
-              <div className="flex items-center gap-3 pl-2">
-                <div className="hidden sm:block text-right">
+              <div className="flex items-center gap-3 pl-1">
+                <div className="hidden lg:block text-right">
                   <p className="text-sm font-black text-white tracking-tight">{user?.full_name || 'Innovator'}</p>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-blue-500">Creator</p>
                 </div>
-                <div className="relative group cursor-pointer">
+                <div className="relative group cursor-pointer hidden sm:block">
                   <div className="h-10 w-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
                     <User size={20} />
                   </div>
@@ -127,11 +130,75 @@ export default function Navbar() {
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-3">
               <Link to="/login" className="px-5 py-2 text-sm font-bold text-gray-400 hover:text-white transition-colors">
                 Sign In
               </Link>
               <Link to="/signup" className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-black rounded-xl shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98]">
+                Get Started
+              </Link>
+            </div>
+          )}
+
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-all md:hidden"
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Drawer */}
+      <div className={`fixed inset-0 top-16 z-40 bg-black/95 backdrop-blur-xl transition-all duration-300 md:hidden ${isMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full pointer-events-none'}`}>
+        <div className="flex flex-col p-6 gap-6">
+          <div className="flex flex-col gap-2">
+            <p className="text-[10px] font-black uppercase tracking-widest text-gray-600 mb-2">Navigation</p>
+            <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 text-xl font-bold text-white p-2">
+              <Home className="text-blue-500" /> Home
+            </Link>
+            <Link to="/notes" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 text-xl font-bold text-white p-2">
+              <FileText className="text-blue-500" /> Workspace
+            </Link>
+            <Link to="/canvas" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 text-xl font-bold text-white p-2">
+              <Shapes className="text-blue-500" /> Canvas
+            </Link>
+            <Link to="/galaxy" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 text-xl font-bold text-white p-2">
+              <Orbit className="text-blue-500" /> Galaxy
+            </Link>
+          </div>
+
+          <div className="h-[1px] bg-white/5"></div>
+
+          {isAuthenticated ? (
+            <div className="flex flex-col gap-4">
+              <p className="text-[10px] font-black uppercase tracking-widest text-gray-600">Account</p>
+              <div className="flex items-center gap-4 p-2">
+                <div className="h-12 w-12 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                  <User size={24} />
+                </div>
+                <div>
+                  <p className="text-lg font-black text-white">{user?.full_name}</p>
+                  <p className="text-sm text-gray-500">{user?.email}</p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 mt-2">
+                {isAuthenticated && <div className="mb-2 w-fit"><ZenPlayer /></div>}
+                <button
+                  onClick={() => { handleLogout(); setIsMenuOpen(false); }}
+                  className="flex items-center gap-4 text-xl font-bold text-red-500 p-2"
+                >
+                  <LogOut /> Sign Out
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-4">
+              <Link to="/login" onClick={() => setIsMenuOpen(false)} className="w-full py-4 text-center text-lg font-black text-white border border-white/10 rounded-2xl">
+                Sign In
+              </Link>
+              <Link to="/signup" onClick={() => setIsMenuOpen(false)} className="w-full py-4 text-center text-lg font-black text-white bg-blue-600 rounded-2xl">
                 Get Started
               </Link>
             </div>
