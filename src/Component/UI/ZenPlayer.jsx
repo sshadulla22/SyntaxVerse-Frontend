@@ -10,10 +10,11 @@ const ZenPlayer = () => {
     useEffect(() => {
         audioRef.current = new Audio();
         audioRef.current.loop = true;
+        audioRef.current.crossOrigin = "anonymous"; // Enable cross-origin for external streams
 
         const handleEnded = () => setIsPlaying(false);
-        const handleError = () => {
-            console.error("Audio playback error");
+        const handleError = (e) => {
+            console.error("Audio playback error:", e);
             setError(true);
             setIsPlaying(false);
         };
@@ -35,21 +36,21 @@ const ZenPlayer = () => {
             id: 'nebula',
             name: 'Deep Nebula',
             icon: Waves,
-            url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112762.mp3',
+            url: 'https://assets.mixkit.co/music/preview/mixkit-lo-fi-night-chill-1996.mp3',
             color: 'text-purple-400'
         },
         {
             id: 'solar',
             name: 'Solar Wind',
             icon: Wind,
-            url: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_1c37b98763.mp3?filename=please-calm-my-mind-126270.mp3',
+            url: 'https://assets.mixkit.co/music/preview/mixkit-dreamy-lullaby-music-box-2022.mp3',
             color: 'text-orange-400'
         },
         {
             id: 'void',
             name: 'Cosmic Void',
             icon: Zap,
-            url: 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=mantra-1111-131449.mp3',
+            url: 'https://assets.mixkit.co/music/preview/mixkit-ambient-glitch-loop-2001.mp3',
             color: 'text-blue-400'
         }
     ];
