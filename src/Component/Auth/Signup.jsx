@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, User, UserPlus, Eye, EyeOff, CheckCircle2, AlertCircle, BrainCircuit } from 'lucide-react';
+import { Mail, Lock, User, UserPlus, Eye, EyeOff, CheckCircle2, AlertCircle, BrainCircuit, Activity } from 'lucide-react';
 import authService from '../../services/auth';
+import api from '../../services/api';
 import signupCover from '../../assets/auth/signup_cover.png';
 
 const Signup = () => {
@@ -12,6 +13,7 @@ const Signup = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState({ ok: null, code: null, latency: 0 });
     const [validation, setValidation] = useState({
         length: false,
         match: false,
@@ -27,6 +29,16 @@ const Signup = () => {
             email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
         });
     }, [password, confirmPassword, email]);
+
+    useEffect(() => {
+        const checkStatus = async () => {
+            const health = await api.getHealth();
+            setStatus({ ok: health.ok, code: health.status, latency: health.latency });
+        };
+        checkStatus();
+        const interval = setInterval(checkStatus, 15000);
+        return () => clearInterval(interval);
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -92,8 +104,18 @@ const Signup = () => {
                     </div>
 
                     <div className="hidden lg:block mb-10">
-                        <h2 className="text-4xl font-black text-white tracking-tight mb-2">Create Account</h2>
-                        <p className="text-gray-500 font-semibold">Start your knowledge journey today</p>
+                        <div className="flex items-center justify-between mb-2">
+                            <h2 className="text-4xl font-black text-white tracking-tight">Create Account</h2>
+                            {status.code && (
+                                <div className={`flex items-center gap-2 px-3 py-1 rounded-full border ${status.ok ? 'border-green-500/20 bg-green-500/5' : 'border-red-500/20 bg-red-500/5'} transition-all duration-500`}>
+                                    <div className={`w-2 h-2 rounded-full ${status.ok ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
+                                    <span className={`text-[10px] font-black uppercase tracking-widest ${status.ok ? 'text-green-500' : 'text-red-500'}`}>
+                                        {status.code} • {status.latency}ms
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                        <p className="text-gray-500 font-semibold italic">Start your knowledge journey today</p>
                     </div>
 
                     {error && (

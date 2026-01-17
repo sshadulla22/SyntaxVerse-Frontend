@@ -1,14 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { Home, Settings, Bell, LogOut, FileText, User, Shapes, Orbit } from "lucide-react";
+import { Home, Settings, Bell, LogOut, FileText, User, Shapes, Orbit, Activity } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import authService from "../../services/auth";
+import api from "../../services/api";
 import ZenPlayer from "../UI/ZenPlayer";
 import logo from "../../assets/logo/syntaxverse_logo.png";
 
 export default function Navbar() {
   const [user, setUser] = useState(null);
+  const [status, setStatus] = useState({ ok: true, code: 200, latency: 0 });
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      const health = await api.getHealth();
+      setStatus({ ok: health.ok, code: health.status, latency: health.latency });
+    };
+
+    checkStatus();
+    const interval = setInterval(checkStatus, 30000); // Check every 30s
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -35,8 +48,16 @@ export default function Navbar() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center group-hover:bg-white/5 transition-all duration-300 transform group-hover:scale-110 shadow-lg shadow-blue-500/20 overflow-hidden border border-white/10 p-1">
             <img src={logo} alt="SyntaxVerse" className="w-full h-full object-contain" />
           </div>
-          <div className="text-xl font-black text-white tracking-widest uppercase font-display">
-            SYNTAX<span className="text-blue-500">VERSE</span>
+          <div className="flex flex-col">
+            <div className="text-xl font-black text-white tracking-widest uppercase font-display leading-tight">
+              SYNTAX<span className="text-blue-500">VERSE</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-0.5">
+              <div className={`w-1.5 h-1.5 rounded-full ${status.ok ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
+              <span className={`text-[8px] font-black uppercase tracking-[0.2em] ${status.ok ? 'text-green-500/80' : 'text-red-500/80'}`}>
+                System {status.ok ? 'Online' : 'Offline'} • {status.code} • {status.latency}ms
+              </span>
+            </div>
           </div>
         </Link>
 

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, LogIn, Github, Eye, EyeOff, AlertCircle, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Mail, Lock, LogIn, Github, Eye, EyeOff, AlertCircle, ArrowRight, ShieldCheck, Activity } from 'lucide-react';
 import authService from '../../services/auth';
+import api from '../../services/api';
 import loginCover from '../../assets/auth/login_cover.png';
 
 const Login = () => {
@@ -10,7 +11,18 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState({ ok: null, code: null, latency: 0 });
     const navigate = useNavigate();
+
+    React.useEffect(() => {
+        const checkStatus = async () => {
+            const health = await api.getHealth();
+            setStatus({ ok: health.ok, code: health.status, latency: health.latency });
+        };
+        checkStatus();
+        const interval = setInterval(checkStatus, 15000);
+        return () => clearInterval(interval);
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -42,8 +54,18 @@ const Login = () => {
                         <h2 className="text-3xl font-black text-white tracking-tight text-center">SyntaxVerse Login.</h2>
                     </div>
 
-                    <div className="hidden lg:block mb-10">
-                        <h2 className="text-4xl font-black text-white tracking-tight mb-2">Welcome Back</h2>
+                    <div className="hidden lg:block mb-8">
+                        <div className="flex items-center justify-between mb-2">
+                            <h2 className="text-4xl font-black text-white tracking-tight">Welcome Back</h2>
+                            {status.code && (
+                                <div className={`flex items-center gap-2 px-3 py-1 rounded-full border ${status.ok ? 'border-green-500/20 bg-green-500/5' : 'border-red-500/20 bg-red-500/5'} transition-all duration-500`}>
+                                    <div className={`w-2 h-2 rounded-full ${status.ok ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
+                                    <span className={`text-[10px] font-black uppercase tracking-widest ${status.ok ? 'text-green-500' : 'text-red-500'}`}>
+                                        {status.code} • {status.latency}ms
+                                    </span>
+                                </div>
+                            )}
+                        </div>
                         <p className="text-gray-500 font-semibold text-lg">Your second brain is waiting</p>
                     </div>
 

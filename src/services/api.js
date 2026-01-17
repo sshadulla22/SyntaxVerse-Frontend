@@ -129,6 +129,27 @@ const api = {
             console.error("API Error (executeCode):", error);
             throw error;
         }
+    },
+
+    getHealth: async () => {
+        const start = Date.now();
+        try {
+            const response = await fetchWithTimeout(`${API_BASE_URL}/`, { timeout: 3000 });
+            const latency = Date.now() - start;
+            return {
+                ok: response.ok,
+                status: response.status,
+                latency: latency,
+                timestamp: new Date().toISOString()
+            };
+        } catch (error) {
+            return {
+                ok: false,
+                status: 'ERR',
+                latency: Date.now() - start,
+                timestamp: new Date().toISOString()
+            };
+        }
     }
 };
 
