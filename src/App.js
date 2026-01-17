@@ -9,6 +9,7 @@ import GalaxyGraph from "./Component/GalaxyGraph";
 import authService from "./services/auth";
 import StarsBackground from "./Component/UI/StarsBackground";
 import CommandCenter from "./Component/UI/CommandCenter";
+import ErrorPage from "./Component/UI/ErrorPage";
 
 const ProtectedRoute = ({ children }) => {
   if (!authService.isAuthenticated()) {
@@ -59,8 +60,13 @@ function App() {
           </ProtectedRoute>
         } />
 
+        {/* Status Code Pages */}
+        <Route path="/404" element={<ErrorPage code="404" />} />
+        <Route path="/500" element={<ErrorPage code="500" />} />
+        <Route path="/403" element={<ErrorPage code="403" />} />
+
         {/* Catch all */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<ErrorPage code="404" />} />
       </Routes>
     </BrowserRouter>
   );
