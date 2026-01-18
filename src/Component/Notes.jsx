@@ -8,7 +8,11 @@ import {
   Home,
   PlusCircle,
   Trash2,
-  Search
+  Search,
+  Edit2,
+  Check,
+  X,
+  MoreVertical
 } from "lucide-react";
 import api from "../services/api";
 
@@ -19,6 +23,8 @@ const Notes = () => {
   const [notes, setNotes] = useState([]);
   const [breadcrumbs, setBreadcrumbs] = useState([{ id: null, title: "Home" }]);
   const [newItemTitle, setNewItemTitle] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
 
   const [loading, setLoading] = useState(true);
 
@@ -101,16 +107,50 @@ const Notes = () => {
   };
 
   const handleDelete = async (noteId, e) => {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     if (window.confirm("Are you sure you want to delete this item?")) {
       try {
         await api.deleteNote(noteId);
         loadNotes();
+        // If we deleted the current folder, navigate up
+        if (noteId === currentFolder) {
+          handleBreadcrumbClick(breadcrumbs.length - 2);
+        }
       } catch (error) {
         console.error("Error deleting note:", error);
         alert("Failed to delete item");
       }
     }
+  };
+
+  const handleEditClick = (note, e) => {
+    e.stopPropagation();
+    setEditingId(note.id);
+    setEditTitle(note.title);
+  };
+
+  const handleRename = async (noteId, e) => {
+    e.stopPropagation();
+    if (!editTitle.trim()) return;
+    try {
+      await api.updateNote(noteId, { title: editTitle });
+      setEditingId(null);
+      loadNotes();
+      // If we renamed the current folder, update breadcrumbs
+      if (noteId === currentFolder) {
+        const newBreadcrumbs = [...breadcrumbs];
+        newBreadcrumbs[newBreadcrumbs.length - 1].title = editTitle;
+        setBreadcrumbs(newBreadcrumbs);
+      }
+    } catch (error) {
+      console.error("Error renaming item:", error);
+      alert("Failed to rename item");
+    }
+  };
+
+  const handleCancelEdit = (e) => {
+    e.stopPropagation();
+    setEditingId(null);
   };
 
   return (
@@ -142,6 +182,27 @@ const Notes = () => {
           </nav>
 
           <div className="flex items-center gap-2">
+            {currentFolder && (
+              <div className="flex items-center gap-2 mr-2 border-r border-[#333333] pr-4">
+                <button
+                  onClick={(e) => {
+                    const folder = breadcrumbs[breadcrumbs.length - 1];
+                    handleEditClick({ id: folder.id, title: folder.title }, e);
+                  }}
+                  className="p-2 text-gray-400 hover:text-blue-500 transition-colors rounded-lg hover:bg-blue-500/10"
+                  title="Rename Current Folder"
+                >
+                  <Edit2 size={18} />
+                </button>
+                <button
+                  onClick={(e) => handleDelete(currentFolder, e)}
+                  className="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-500/10"
+                  title="Delete Current Folder"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            )}
             <div className="relative group">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-blue-500 transition-colors" size={16} />
               <input
@@ -204,18 +265,44 @@ const Notes = () => {
                         }`}>
                         {note.is_folder ? <FolderIcon size={20} /> : <FileText size={20} />}
                       </div>
-                      <button
-                        onClick={(e) => handleDelete(note.id, e)}
-                        className="p-1 text-gray-600 hover:text-red-500 transition-colors rounded-lg hover:bg-red-500/10 opacity-0 group-hover:opacity-100"
-                      >
-                        <Trash2 size={18} />
-                      </button>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={(e) => handleEditClick(note, e)}
+                          className="p-1 text-gray-600 hover:text-blue-500 transition-colors rounded-lg hover:bg-blue-500/10 opacity-0 group-hover:opacity-100"
+                        >
+                          <Edit2 size={18} />
+                        </button>
+                        <button
+                          onClick={(e) => handleDelete(note.id, e)}
+                          className="p-1 text-gray-600 hover:text-red-500 transition-colors rounded-lg hover:bg-red-500/10 opacity-0 group-hover:opacity-100"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
                     </div>
 
                     <div>
-                      <h4 className="text-white font-bold group-hover:text-blue-400 transition-colors truncate">
-                        {note.title}
-                      </h4>
+                      {editingId === note.id ? (
+                        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                          <input
+                            autoFocus
+                            className="bg-[#1a1a1a] border border-blue-500/50 rounded px-2 py-1 text-sm text-white outline-none w-full"
+                            value={editTitle}
+                            onChange={(e) => setEditTitle(e.target.value)}
+                            onKeyPress={(e) => e.key === "Enter" && handleRename(note.id, e)}
+                          />
+                          <button onClick={(e) => handleRename(note.id, e)} className="text-green-500 hover:text-green-400">
+                            <Check size={16} />
+                          </button>
+                          <button onClick={handleCancelEdit} className="text-gray-500 hover:text-white">
+                            <X size={16} />
+                          </button>
+                        </div>
+                      ) : (
+                        <h4 className="text-white font-bold group-hover:text-blue-400 transition-colors truncate">
+                          {note.title}
+                        </h4>
+                      )}
                       <div className="mt-1 flex items-center justify-between">
                         <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
                           {note.is_folder ? "Folder" : "Note"}
