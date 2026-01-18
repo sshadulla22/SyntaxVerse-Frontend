@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Plus, Folder as FolderIcon, Clock, MoreVertical, Trash2 } from "lucide-react";
+import { Search, Plus, Folder as FolderIcon, Clock, MoreVertical, Trash2, Edit2, Check, X } from "lucide-react";
 import GlobalHeader from "./Navigation/GlobalHeader";
 import api from "../services/api";
 import authService from "../services/auth";
@@ -12,6 +12,8 @@ const Main = () => {
     const [newTopicTitle, setNewTopicTitle] = useState("");
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
+    const [editingId, setEditingId] = useState(null);
+    const [editTitle, setEditTitle] = useState("");
     const videoRef = useRef(null);
 
     useEffect(() => {
@@ -72,6 +74,43 @@ const Main = () => {
             console.error("Error creating topic:", error);
             alert("Failed to create topic");
         }
+    };
+
+    const handleDeleteTopic = async (topicId, e) => {
+        e.stopPropagation();
+        if (window.confirm("Are you sure you want to delete this topic and all its contents?")) {
+            try {
+                await api.deleteNote(topicId);
+                loadTopics();
+            } catch (error) {
+                console.error("Error deleting topic:", error);
+                alert("Failed to delete topic");
+            }
+        }
+    };
+
+    const handleEditClick = (topic, e) => {
+        e.stopPropagation();
+        setEditingId(topic.id);
+        setEditTitle(topic.title);
+    };
+
+    const handleRenameTopic = async (topicId, e) => {
+        e.stopPropagation();
+        if (!editTitle.trim()) return;
+        try {
+            await api.updateNote(topicId, { title: editTitle });
+            setEditingId(null);
+            loadTopics();
+        } catch (error) {
+            console.error("Error renaming topic:", error);
+            alert("Failed to rename topic");
+        }
+    };
+
+    const handleCancelEdit = (e) => {
+        e.stopPropagation();
+        setEditingId(null);
     };
 
     const filteredTopics = topics.filter((topic) =>
@@ -216,15 +255,46 @@ const Main = () => {
                                                 <div className="bg-blue-600/20 p-2 rounded-2xl border border-blue-500/30 group-hover:scale-110 transition-transform duration-300">
                                                     <FolderIcon className="text-blue-500" size={28} />
                                                 </div>
-                                                <button className="text-gray-600 hover:text-white transition-colors p-1" onClick={(e) => e.stopPropagation()}>
-                                                    <MoreVertical size={20} />
-                                                </button>
+                                                <div className="flex items-center gap-1">
+                                                    <button
+                                                        className="text-gray-600 hover:text-blue-500 transition-colors p-1.5 rounded-lg hover:bg-blue-500/10 opacity-0 group-hover:opacity-100"
+                                                        onClick={(e) => handleEditClick(topic, e)}
+                                                        title="Rename Topic"
+                                                    >
+                                                        <Edit2 size={18} />
+                                                    </button>
+                                                    <button
+                                                        className="text-gray-600 hover:text-red-500 transition-colors p-1.5 rounded-lg hover:bg-red-500/10 opacity-0 group-hover:opacity-100"
+                                                        onClick={(e) => handleDeleteTopic(topic.id, e)}
+                                                        title="Delete Topic"
+                                                    >
+                                                        <Trash2 size={18} />
+                                                    </button>
+                                                </div>
                                             </div>
 
                                             <div className="mt-4 relative z-10">
-                                                <h3 className="text-xl font-black text-white group-hover:text-blue-400 transition-colors truncate font-display">
-                                                    {topic.title}
-                                                </h3>
+                                                {editingId === topic.id ? (
+                                                    <div className="flex items-center gap-2 mb-2" onClick={(e) => e.stopPropagation()}>
+                                                        <input
+                                                            autoFocus
+                                                            className="bg-black border border-blue-500/50 rounded-xl px-3 py-1.5 text-sm text-white outline-none w-full"
+                                                            value={editTitle}
+                                                            onChange={(e) => setEditTitle(e.target.value)}
+                                                            onKeyPress={(e) => e.key === "Enter" && handleRenameTopic(topic.id, e)}
+                                                        />
+                                                        <button onClick={(e) => handleRenameTopic(topic.id, e)} className="text-green-500 hover:text-green-400 p-1">
+                                                            <Check size={20} />
+                                                        </button>
+                                                        <button onClick={handleCancelEdit} className="text-gray-500 hover:text-white p-1">
+                                                            <X size={20} />
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <h3 className="text-xl font-black text-white group-hover:text-blue-400 transition-colors truncate font-display">
+                                                        {topic.title}
+                                                    </h3>
+                                                )}
 
                                                 <div className="flex items-center gap-4 mt-4 pt-4 border-t border-[#333333]">
                                                     <div className="flex items-center gap-1.5 text-gray-500 text-xs">
