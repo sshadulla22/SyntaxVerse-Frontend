@@ -51,7 +51,7 @@ const Note = () => {
     const [terminalLogs, setTerminalLogs] = useState([
         { type: 'info', message: 'System initialized. Ready for input.' }
     ]);
-    const [showPlayground, setShowPlayground] = useState(true);
+    const [showPlayground, setShowPlayground] = useState(false);
 
     const languages = [
         { id: "javascript", name: "JavaScript (Node)", version: "18.15.0" },
@@ -251,7 +251,7 @@ const Note = () => {
             <main className="flex-1 mt-14 p-2 md:p-3 flex flex-col gap-3 w-full h-[calc(100vh-56px)] overflow-hidden">
 
                 {/* Compact Cover Image Section */}
-                <div className="relative w-full h-4 md:h-28 shrink-0 rounded-2xl overflow-hidden group border border-white/5 shadow-2xl">
+                <div className="relative w-full h-2 md:h-16 shrink-0 rounded-2xl overflow-hidden group border border-white/5 shadow-2xl">
                     <img
                         src={note?.cover_image || "https://th.bing.com/th/id/R.c287231a4a0984de41cba7188a78cd06?rik=CyKJtMg0oU3WCQ&riu=http%3a%2f%2fgetwallpapers.com%2fwallpaper%2ffull%2f9%2fc%2f2%2f797168-download-free-universe-wallpaper-hd-1920x1200.jpg&ehk=RheGKVQLTvxv55I8g9r7S6j2TJBwnnOs92qPqhF45tE%3d&risl=&pid=ImgRaw&r=0"}
                         alt="Note Cover"
@@ -260,9 +260,9 @@ const Note = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
 
                     {/* Dynamic Title Overlay */}
-                    <div className="absolute bottom-4 left-6 right-6 z-10 flex items-center justify-between">
+                    <div className="absolute bottom-2 left-6 right-6 z-10 flex items-center justify-between">
                         <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-black uppercase tracking-[0.2em] mb-1 opacity-80 font-display">Workspace / {note?.folder_name || 'General'}</span>
+                            <span className="text-[10px] font-black text-black/50 uppercase tracking-[0.2em] mb-0.5 font-display">Workspace / {note?.folder_name || 'General'}</span>
                             <h2 className="text-xl md:text-4xl font-black text-White truncate max-w-[500px] drop-shadow-2xl">
                                 {title || "Untitled Perspective"}
                             </h2>
@@ -282,7 +282,7 @@ const Note = () => {
                 </div>
 
                 {/* Slimmed Action Bar */}
-                <header className="bg-black sticky top-0 z-10 border border-[#333333] p-2 rounded-xl shadow-xl flex items-center justify-between gap-3">
+                <header className="bg-black sticky top-0 z-10 border border-[#333333] p-1 rounded-xl shadow-xl flex items-center justify-between gap-3">
                     <div className="flex items-center gap-4 flex-1">
                         <button
                             onClick={() => navigate("/")}
@@ -383,54 +383,11 @@ const Note = () => {
                 </header>
 
                 {/* Main Content Area - Grid */}
-                <div className="flex-1 overflow-hidden flex flex-col lg:flex-row gap-3">
+                <div className="flex-1 overflow-hidden flex flex-col lg:flex-row gap-2">
 
                     {/* Note Editor Pane */}
                     <div className={`flex-1 bg-[#111111] border border-[#333333] rounded-2xl overflow-hidden flex flex-col shadow-2xl relative ${activeTab === "editor" ? "flex" : "hidden lg:flex"}`}>
 
-                        {/* Terminal Box - Top Position */}
-                        {showPlayground && (
-                            <div className="flex-[0_0_200px] bg-none border-b border-[#333333] flex flex-col shrink-0">
-                                <div className="bg-transparent px-4 py-2 border-b border-[#30363d] flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <Terminal size={12} className="text-[#8b949e]" />
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#8b949e] font-display">Terminal</span>
-                                    </div>
-                                    <div className="flex gap-3">
-                                        <button
-                                            onClick={clearTerminal}
-                                            className="text-[10px] font-bold text-gray-600 hover:text-gray-400 transition-colors uppercase tracking-tighter"
-                                        >
-                                            Clear
-                                        </button>
-                                        <div className="flex gap-1.5">
-                                            <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/40"></div>
-                                            <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/40"></div>
-                                            <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/40"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex-1 p-4 font-mono text-xs overflow-auto no-scrollbar space-y-1.5 bg-[#0d1117]">
-                                    {terminalLogs.map((log, index) => (
-                                        <div key={index} className="flex items-start gap-2.5 opacity-90 hover:opacity-100 transition-opacity">
-                                            {log.type === 'command' && <span className="text-blue-500 font-bold shrink-0 mt-[1px]">➜</span>}
-                                            {log.type === 'error' && <AlertCircle size={14} className="text-red-500 shrink-0 mt-0.5" />}
-                                            {log.type === 'log' && <span className="text-emerald-500 shrink-0 mt-[1px]">✓</span>}
-                                            {log.type === 'info' && <span className="text-gray-600 shrink-0 mt-[1px]">i</span>}
-                                            <span className={`leading-relaxed break-all ${log.type === 'error' ? 'text-red-400 font-medium' :
-                                                log.type === 'command' ? 'text-blue-200 font-medium' :
-                                                    log.type === 'log' ? 'text-gray-300' : 'text-gray-500 italic'
-                                                }`}>
-                                                {log.message}
-                                            </span>
-                                        </div>
-                                    ))}
-                                    {terminalLogs.length === 0 && (
-                                        <div className="text-gray-700 italic select-none">Waiting for output...</div>
-                                    )}
-                                </div>
-                            </div>
-                        )}
                         {/* Editor Toolbar - Only visible when editing or content exists */}
                         <div className={`px-4 py-2 border-b border-[#1a1a1a] flex items-center justify-between transition-all ${isEditing ? 'opacity-100' : 'opacity-50 pointer-events-none'}`}>
                             <div className="flex items-center gap-2">
@@ -462,19 +419,55 @@ const Note = () => {
                         </div>
 
                         {isPreview ? (
-                            <div className="flex-1 bg-black overflow-auto p-6 no-scrollbar prose prose-invert prose-sm max-w-none">
+                            <div className="flex-1 bg-black overflow-auto p-8 no-scrollbar prose prose-invert prose-base max-w-none">
                                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
                             </div>
                         ) : (
                             <textarea
-                                className={`flex-1 bg-black text-gray-200 outline-none resize-none leading-relaxed text-sm font-normal  bg-[length:100%_28px] px-2 no-scrollbar ${!isEditing ? 'cursor-cursor' : ''}`}
+                                className={`flex-1 bg-black text-gray-200 outline-none resize-none leading-relaxed text-lg font-normal px-8 py-2 no-scrollbar ${!isEditing ? 'cursor-cursor' : ''}`}
                                 placeholder="Start writing your thoughts..."
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
                                 onClick={() => { if (!isEditing) setIsEditing(true); }}
                                 disabled={!isEditing && false}
-                                style={{ lineHeight: '28px' }} // Match gradient for lined paper effect
                             />
+                        )}
+
+                        {/* Terminal Box - Bottom Position */}
+                        {showPlayground && (
+                            <div className="h-48 bg-none border-t border-[#333333] flex flex-col shrink-0">
+                                <div className="bg-transparent px-4 py-2 border-b border-[#30363d] flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <Terminal size={12} className="text-[#8b949e]" />
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#8b949e] font-display">Terminal Output</span>
+                                    </div>
+                                    <button
+                                        onClick={clearTerminal}
+                                        className="text-[10px] font-bold text-gray-600 hover:text-gray-400 transition-colors uppercase tracking-tighter"
+                                    >
+                                        Clear
+                                    </button>
+                                </div>
+                                <div className="flex-1 p-4 font-mono text-xs overflow-auto no-scrollbar space-y-1.5 bg-[#0d1117]">
+                                    {terminalLogs.map((log, index) => (
+                                        <div key={index} className="flex items-start gap-2.5 opacity-90 hover:opacity-100 transition-opacity">
+                                            {log.type === 'command' && <span className="text-blue-500 font-bold shrink-0 mt-[1px]">➜</span>}
+                                            {log.type === 'error' && <AlertCircle size={14} className="text-red-500 shrink-0 mt-0.5" />}
+                                            {log.type === 'log' && <span className="text-emerald-500 shrink-0 mt-[1px]">✓</span>}
+                                            {log.type === 'info' && <span className="text-gray-600 shrink-0 mt-[1px]">i</span>}
+                                            <span className={`leading-relaxed break-all ${log.type === 'error' ? 'text-red-400 font-medium' :
+                                                log.type === 'command' ? 'text-blue-200 font-medium' :
+                                                    log.type === 'log' ? 'text-gray-300' : 'text-gray-500 italic'
+                                                }`}>
+                                                {log.message}
+                                            </span>
+                                        </div>
+                                    ))}
+                                    {terminalLogs.length === 0 && (
+                                        <div className="text-gray-700 italic select-none text-center py-4">Waiting for execution...</div>
+                                    )}
+                                </div>
+                            </div>
                         )}
                         <div className="px-6 py-3 flex items-center justify-between text-[10px] text-gray-600 font-bold uppercase tracking-widest border-t border-[#1a1a1a] bg-[#111111]/50 backdrop-blur-sm">
                             <div className="flex gap-4">
