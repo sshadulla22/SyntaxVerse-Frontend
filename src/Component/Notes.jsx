@@ -251,37 +251,21 @@ const Notes = () => {
             </div>
           ) : (
             <div className="overflow-y-auto no-scrollbar pb-4">
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {notes.map((note) => (
                   <div
                     key={note.id}
                     onClick={() => handleNoteClick(note)}
-                    className="group relative bg-black/40 hover:bg-[#1a1a1a] border border-[#333333] hover:border-blue-500/50 rounded-2xl p-5 cursor-pointer transition-all duration-300 flex flex-col gap-4"
+                    className="group relative bg-black/40 hover:bg-[#1a1a1a] border border-[#333333] hover:border-blue-500/50 rounded-xl p-4 cursor-pointer transition-all duration-300 flex flex-row items-center gap-4"
                   >
-                    <div className="flex items-start justify-between">
-                      <div className={`p-3 rounded-xl border ${note.is_folder
-                        ? "bg-green-600/20 border-green-500/30 text-green-500"
-                        : "bg-blue-600/20 border-blue-500/30 text-blue-500"
-                        }`}>
-                        {note.is_folder ? <FolderIcon size={20} /> : <FileText size={20} />}
-                      </div>
-                      <div className="flex gap-1">
-                        <button
-                          onClick={(e) => handleEditClick(note, e)}
-                          className="p-1 text-gray-600 hover:text-blue-500 transition-colors rounded-lg hover:bg-blue-500/10 opacity-0 group-hover:opacity-100"
-                        >
-                          <Edit2 size={18} />
-                        </button>
-                        <button
-                          onClick={(e) => handleDelete(note.id, e)}
-                          className="p-1 text-gray-600 hover:text-red-500 transition-colors rounded-lg hover:bg-red-500/10 opacity-0 group-hover:opacity-100"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
+                    <div className={`p-3 rounded-xl border shrink-0 ${note.is_folder
+                      ? "bg-green-600/20 border-green-500/30 text-green-500"
+                      : "bg-blue-600/20 border-blue-500/30 text-blue-500"
+                      }`}>
+                      {note.is_folder ? <FolderIcon size={20} /> : <FileText size={20} />}
                     </div>
 
-                    <div>
+                    <div className="flex-1 min-w-0">
                       {editingId === note.id ? (
                         <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                           <input
@@ -299,18 +283,35 @@ const Notes = () => {
                           </button>
                         </div>
                       ) : (
-                        <h4 className="text-white font-bold group-hover:text-blue-400 transition-colors truncate">
-                          {note.title}
-                        </h4>
+                        <div>
+                          <h4 className="text-white font-bold group-hover:text-blue-400 transition-colors truncate">
+                            {note.title}
+                          </h4>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                              {note.is_folder ? "Folder" : "Note"}
+                            </span>
+                            <span className="text-[10px] text-gray-600">
+                              {new Date(note.created_at).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
                       )}
-                      <div className="mt-1 flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                          {note.is_folder ? "Folder" : "Note"}
-                        </span>
-                        <span className="text-[10px] text-gray-600">
-                          {new Date(note.created_at).toLocaleDateString()}
-                        </span>
-                      </div>
+                    </div>
+
+                    <div className="flex gap-1 shrink-0">
+                      <button
+                        onClick={(e) => handleEditClick(note, e)}
+                        className="p-2 text-gray-600 hover:text-blue-500 transition-colors rounded-lg hover:bg-blue-500/10 opacity-0 group-hover:opacity-100"
+                      >
+                        <Edit2 size={18} />
+                      </button>
+                      <button
+                        onClick={(e) => handleDelete(note.id, e)}
+                        className="p-2 text-gray-600 hover:text-red-500 transition-colors rounded-lg hover:bg-red-500/10 opacity-0 group-hover:opacity-100"
+                      >
+                        <Trash2 size={18} />
+                      </button>
                     </div>
                   </div>
                 ))}

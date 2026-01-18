@@ -247,65 +247,64 @@ const Main = () => {
                                         <div
                                             key={topic.id}
                                             onClick={() => handleTopicClick(topic)}
-                                            className="group relative bg-transparent hover:bg-black border border-gray-900 hover:border-blue-500/50 rounded-3xl p-4 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-500/10 overflow-hidden"
+                                            className="group flex flex-row items-center gap-4 relative bg-black/40 hover:bg-black border border-gray-900 hover:border-blue-500/50 rounded-2xl p-1 cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/10 overflow-hidden"
                                         >
                                             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 rounded-full -translate-y-16 translate-x-16 blur-3xl group-hover:bg-blue-600/10 transition-colors"></div>
 
-                                            <div className="flex items-start justify-between relative z-10">
-                                                <div className="bg-blue-600/20 p-2 rounded-2xl border border-blue-500/30 group-hover:scale-110 transition-transform duration-300">
-                                                    <FolderIcon className="text-blue-500" size={28} />
-                                                </div>
-                                                <div className="flex items-center gap-1">
-                                                    <button
-                                                        className="text-gray-600 hover:text-blue-500 transition-colors p-1.5 rounded-lg hover:bg-blue-500/10 opacity-0 group-hover:opacity-100"
-                                                        onClick={(e) => handleEditClick(topic, e)}
-                                                        title="Rename Topic"
-                                                    >
-                                                        <Edit2 size={18} />
-                                                    </button>
-                                                    <button
-                                                        className="text-gray-600 hover:text-red-500 transition-colors p-1.5 rounded-lg hover:bg-red-500/10 opacity-0 group-hover:opacity-100"
-                                                        onClick={(e) => handleDeleteTopic(topic.id, e)}
-                                                        title="Delete Topic"
-                                                    >
-                                                        <Trash2 size={18} />
-                                                    </button>
-                                                </div>
+                                            <div className="bg-blue-600/20 p-3 rounded-xl border border-blue-500/30 group-hover:scale-110 transition-transform duration-300 relative z-10 shrink-0">
+                                                <FolderIcon className="text-blue-500" size={24} />
                                             </div>
 
-                                            <div className="mt-4 relative z-10">
+                                            <div className="flex-1 min-w-0 relative z-10">
                                                 {editingId === topic.id ? (
-                                                    <div className="flex items-center gap-2 mb-2" onClick={(e) => e.stopPropagation()}>
+                                                    <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                                                         <input
                                                             autoFocus
-                                                            className="bg-black border border-blue-500/50 rounded-xl px-3 py-1.5 text-sm text-white outline-none w-full"
+                                                            className="bg-black border border-blue-500/50 rounded-lg px-3 py-1 text-sm text-white outline-none w-full"
                                                             value={editTitle}
                                                             onChange={(e) => setEditTitle(e.target.value)}
                                                             onKeyPress={(e) => e.key === "Enter" && handleRenameTopic(topic.id, e)}
                                                         />
                                                         <button onClick={(e) => handleRenameTopic(topic.id, e)} className="text-green-500 hover:text-green-400 p-1">
-                                                            <Check size={20} />
+                                                            <Check size={18} />
                                                         </button>
                                                         <button onClick={handleCancelEdit} className="text-gray-500 hover:text-white p-1">
-                                                            <X size={20} />
+                                                            <X size={18} />
                                                         </button>
                                                     </div>
                                                 ) : (
-                                                    <h3 className="text-xl font-black text-white group-hover:text-blue-400 transition-colors truncate font-display">
-                                                        {topic.title}
-                                                    </h3>
+                                                    <div className="flex flex-col">
+                                                        <h3 className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors truncate font-display">
+                                                            {topic.title}
+                                                        </h3>
+                                                        <div className="flex items-center gap-2 mt-0.5">
+                                                            <span className="text-[10px] text-gray-500 flex items-center gap-1">
+                                                                <Clock size={10} />
+                                                                {new Date(topic.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                                            </span>
+                                                            <span className="text-[10px] text-blue-500/60 font-bold uppercase tracking-wider">
+                                                                Folder
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                                 )}
+                                            </div>
 
-                                                <div className="flex items-center gap-4 mt-4 pt-4 border-t border-[#333333]">
-                                                    <div className="flex items-center gap-1.5 text-gray-500 text-xs">
-                                                        <Clock size={14} />
-                                                        {new Date(topic.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                                                    </div>
-                                                    <div className="h-1 w-1 rounded-full bg-gray-700"></div>
-                                                    <div className="text-blue-500/60 text-xs font-semibold uppercase tracking-wider">
-                                                        Folder
-                                                    </div>
-                                                </div>
+                                            <div className="flex items-center gap-1 relative z-10 shrink-0">
+                                                <button
+                                                    className="text-gray-600 hover:text-blue-500 transition-colors p-2 rounded-lg hover:bg-blue-500/10 opacity-0 group-hover:opacity-100"
+                                                    onClick={(e) => handleEditClick(topic, e)}
+                                                    title="Rename Topic"
+                                                >
+                                                    <Edit2 size={16} />
+                                                </button>
+                                                <button
+                                                    className="text-gray-600 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-500/10 opacity-0 group-hover:opacity-100"
+                                                    onClick={(e) => handleDeleteTopic(topic.id, e)}
+                                                    title="Delete Topic"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
                                             </div>
                                         </div>
                                     ))
