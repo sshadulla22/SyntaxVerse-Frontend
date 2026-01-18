@@ -160,7 +160,7 @@ const Notes = () => {
       <main className="flex-1 mt-16 p-4 md:p-8 w-full flex flex-col gap-6">
 
         {/* Navigation & Breadcrumbs Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-black border border-[#333333] p-4 rounded-2xl shadow-xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-black border border-[#333333] p-2 rounded-2xl shadow-xl">
           <nav className="flex items-center gap-2 overflow-x-auto no-scrollbar">
             {breadcrumbs.map((crumb, index) => (
               <React.Fragment key={index}>
@@ -250,13 +250,13 @@ const Notes = () => {
               </p>
             </div>
           ) : (
-            <div className="overflow-y-auto no-scrollbar pb-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="overflow-y-auto rounded no-scrollbar pb-2">
+              <div className="grid grid-cols-1 rounded md:grid-cols-4 gap-2">
                 {notes.map((note) => (
                   <div
                     key={note.id}
                     onClick={() => handleNoteClick(note)}
-                    className="group relative bg-black/40 hover:bg-[#1a1a1a] border border-[#333333] hover:border-blue-500/50 rounded-xl p-4 cursor-pointer transition-all duration-300 flex flex-row items-center gap-4"
+                    className="group relative bg-black/40 hover:bg-[#1a1a1a] border border-[#333333] hover:border-blue-500/50 rounded-xl p-1 cursor-pointer transition-all duration-300 flex flex-row items-center gap-4"
                   >
                     <div className={`p-3 rounded-xl border shrink-0 ${note.is_folder
                       ? "bg-green-600/20 border-green-500/30 text-green-500"

@@ -247,7 +247,7 @@ const Main = () => {
                                         <div
                                             key={topic.id}
                                             onClick={() => handleTopicClick(topic)}
-                                            className="group flex flex-row items-center gap-4 relative bg-black/40 hover:bg-black border border-gray-900 hover:border-blue-500/50 rounded-2xl p-1 cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/10 overflow-hidden"
+                                            className="group flex flex-row-4 items-center gap-2 relative bg-black/40 hover:bg-black border border-gray-900 hover:border-blue-500/50 rounded-2xl p-1 cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/10 overflow-hidden"
                                         >
                                             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 rounded-full -translate-y-16 translate-x-16 blur-3xl group-hover:bg-blue-600/10 transition-colors"></div>
 

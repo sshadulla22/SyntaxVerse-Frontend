@@ -80,6 +80,18 @@ export default function Navbar() {
             <Orbit size={18} />
             <span className="font-display uppercase tracking-widest text-[10px]">Galaxy</span>
           </Link>
+          <a
+            href="https://self-dev-learning-platform.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all text-gray-400 hover:text-white hover:bg-white/5"
+          >
+            <Orbit size={18} />
+            <span className="font-display uppercase tracking-widest text-[10px]">
+              Learn More
+            </span>
+          </a>
+
         </div>
 
         {/* Right Section: ZenPlayer & Profile & Mobile Toggle */}
@@ -167,6 +179,7 @@ export default function Navbar() {
             <Link to="/galaxy" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 text-xl font-bold text-white p-2">
               <Orbit className="text-blue-500" /> Galaxy
             </Link>
+
           </div>
 
           <div className="h-[1px] bg-white/5"></div>

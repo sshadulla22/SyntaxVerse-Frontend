@@ -252,30 +252,18 @@ const Note = () => {
 
                 {/* Compact Cover Image Section */}
                 <div className="relative w-full h-2 md:h-16 shrink-0 rounded-2xl overflow-hidden group border border-white/5 shadow-2xl">
-                    {note?.cover_image ? (
-                        <img
-                            src={note.cover_image}
-                            alt="Note Cover"
-                            className="w-full h-full object-cover transition-all duration-700 opacity-80 group-hover:opacity-100 group-hover:scale-105"
-                        />
-                    ) : (
-                        <video
-                            src="https://pixabay.com/videos/download/x-6797_medium.mp4"   // public/videos/space.mp4
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            className="w-full h-full object-cover transition-all duration-700 opacity-90 group-hover:opacity-100 group-hover:scale-105"
-                        />
-                    )}
-
+                    <img
+                        src={note?.cover_image || "https://th.bing.com/th/id/R.c287231a4a0984de41cba7188a78cd06?rik=CyKJtMg0oU3WCQ&riu=http%3a%2f%2fgetwallpapers.com%2fwallpaper%2ffull%2f9%2fc%2f2%2f797168-download-free-universe-wallpaper-hd-1920x1200.jpg&ehk=RheGKVQLTvxv55I8g9r7S6j2TJBwnnOs92qPqhF45tE%3d&risl=&pid=ImgRaw&r=0"}
+                        alt="Note Cover"
+                        className="w-full h-full object-cover transition-all duration-700 opacity-80 group-hover:opacity-100 group-hover:scale-105"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
 
                     {/* Dynamic Title Overlay */}
                     <div className="absolute bottom-2 left-4 right-6 z-10 flex items-center justify-between">
                         <div className="flex flex-col">
                             <span className="text-[10px] font-black text-black/50 uppercase tracking-[0.2em] mb-0 font-display">Workspace / {note?.folder_name || 'General'}</span>
-                            <h2 className="text-xl md:text-3xl font-black text-white truncate max-w-[500px] drop-shadow-2xl tracking-tight">
+                            <h2 className="text-xl md:text-3xl font-black text-White truncate max-w-[500px] drop-shadow-2xl">
                                 {title || "Untitled Perspective"}
                             </h2>
                         </div>
@@ -436,7 +424,7 @@ const Note = () => {
                             </div>
                         ) : (
                             <textarea
-                                className={`flex-1 bg-black text-gray-200 outline-none resize-none leading-[1.8] text-base font-normal px-6 md:px-12 py-4 no-scrollbar ${!isEditing ? 'cursor-cursor' : ''} selection:bg-blue-500/30 selection:text-white`}
+                                className={`flex-1 bg-black text-gray-200 outline-none resize-none leading-relaxed text-sm font-normal px-4 py-2 no-scrollbar ${!isEditing ? 'cursor-cursor' : ''}`}
                                 placeholder="Start writing your thoughts..."
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
